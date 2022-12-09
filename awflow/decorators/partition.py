@@ -27,8 +27,13 @@ def partition(f: Callable, partition: Union[str, List[str]]) -> Callable:
 @parameterized
 def constraint(f: Callable, constraint: Union[str, List[str]]) -> Callable:
     node = add_and_get_node(f)
-    if is_iterable(constraint):
-        constraint = "|".join(constraint)
+    if isinstance(constraint, list):
+        if len(constraint) > 1:
+            constraint = "|".join(constraint)
+        elif len(constraint) == 1:
+            constraint = constraint[0]
+        else:
+            constraint = None
     set_constraint(node, constraint)
 
     return f

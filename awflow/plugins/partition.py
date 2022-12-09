@@ -24,8 +24,9 @@ def set_partitions(node: Node, partitions: List[str]) -> None:
 
 
 def set_constraint(node: Node, constraints: str) -> None:
-    if '--constraint=' not in node.attributes.keys():
-        node['--constraint='] = constraints
+    if constraints is not None:
+        if '--constraint=' not in node.attributes.keys():
+            node['--constraint='] = constraints
 
 
 def generate_before(node: Node) -> List[str]:
