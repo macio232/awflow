@@ -22,5 +22,9 @@ def gpus(node: Node, n: int) -> None:
     node['--gres=gpu:'] = str(n)
 
 
+def gpus_memory(node: Node, memory: str) -> None:
+    node['--gres=VramPerGpu:'] = memory.upper()
+
+
 def timelimit(node: Node, timelimit: str) -> None:
     node['--time='] = str(timelimit)
