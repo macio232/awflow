@@ -79,9 +79,9 @@ def cpus_and_memory(f: Callable, n: int, memory: str) -> Callable:
 
 
 @parameterized
-def gpus(f: Callable, n: int) -> Callable:
+def gpus(f: Callable, n: int, memory: str=None) -> Callable:
     node = add_and_get_node(f)
-    awflow.backend.gpus(node, n)
+    awflow.backend.gpus(node, n, memory)
 
     return f
 
