@@ -18,7 +18,7 @@ def memory(node: Node, memory: str) -> None:
     pass  # Nothing to do here.
 
 
-def gpus(node: Node, n: int) -> None:
+def gpus(node: Node, n: int, memory: str = None) -> None:
     pass  # Nothing to do here.
 
 
