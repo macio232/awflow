@@ -14,7 +14,7 @@ def cpus(node: Node, n: int) -> None:
     pass  # Nothing to do here.
 
 
-def memory(node: Node, memory: str) -> None:
+def memory(node: Node, memory: str, n=None) -> None:
     pass  # Nothing to do here.
 
 
