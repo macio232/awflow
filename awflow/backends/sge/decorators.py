@@ -18,7 +18,8 @@ def cpus(node: Node, n: int) -> None:
 
 
 def memory(node: Node, memory: str, n: int = 1) -> None:
-    node['-l h_vmem='] = f'{float(re.match(r"\d+", memory).group(0)) / n:.2f}G'
+    mem = float(re.match(r"\d+", memory).group(0)) / n
+    node['-l h_vmem='] = f'{mem:.2f}G'
 
 
 def gpus(node: Node, n: int, memory: str=None) -> None:
