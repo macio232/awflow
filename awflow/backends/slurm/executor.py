@@ -33,7 +33,7 @@ def execute(workflow: DAWG, dir: str = '.workflows', **kwargs) -> None:
         # Prepare the Slurm submission.
         prepare_submission(workflow=workflow, dir=directory)
         try:
-            submit(dir=directory)  # Submit to Slurm
+            submit(dir=directory)  # Submit to SGE
         except Exception as e:
             print(e)
             shutil.rmtree(directory)  # Remove the generated files.
@@ -50,34 +50,33 @@ def prepare_submission(workflow: DAWG, dir: str) -> None:
 
 def add_default_attributes(workflow: DAWG, dir: str) -> None:
     for node in workflow.nodes:
-        node['--export='] = 'ALL'  # Exports all environment variables to the job.
-        node['--parsable'] = ''   # Enables convenient reading of task ID.
-        node['--requeue'] = ''    # Automatically requeue when something fails.
-        node['--job-name='] = '"' + node.name + '"'
+        node['-V'] = ''  # Exports all environment variables to the job.
+        node['-r'] = 'yes'    # Automatically requeue when something fails.
+        node['-N'] = '"' + node.name + '"'
         # Set the location of the logfile.
         fmt = '"' + dir + '/logs/' + node.name
         if node.tasks > 1:
             fmt += '-%A_%a.log'
         else:
             fmt += '-%j.log'
-        node['--output='] = fmt + '"'
+        node['-o'] = fmt + '"'
 
 
 def generate_task_files(workflow: DAWG, dir: str) -> None:
     for node in workflow.nodes:
         lines = []
-        lines.append('#!/usr/bin/env bash')
+        lines.append('#!/bin/bash')
         # Set the task attributes
         for key in node.attributes:
-            if key[:2] != '--':  # Skip non-sbatch arguments
+            if key[:1] != '-':  # Skip non-sbatch arguments
                 continue
             value = node[key]
-            line = '#SBATCH ' + key + value
+            line = '#$ ' + key + value
             lines.append(line)
         # Check if the task is an array task.
         if node.tasks > 1:
-            lines.append('#SBATCH --array 0-' + str(node.tasks - 1))
-            command_suffix = ' $SLURM_ARRAY_TASK_ID'
+            lines.append('#$ -t 0-' + str(node.tasks - 1))
+            command_suffix = ' $SGE_TASK_ID'
         else:
             command_suffix = ''
         # Generate the commands of the task
@@ -99,20 +98,20 @@ def node_task_filename(node):
 
 def generate_submission_script(workflow: DAWG, dir: str) -> None:
     lines = []
-    lines.append('#!/usr/bin/env bash')
+    lines.append('#!/bin/bash')
     lines.append('mkdir -p {}/logs'.format(dir))
     job_identifiers = 'echo "'
     tasks = {}
     for task_index, task in enumerate(workflow.program()):
         tasks[task.identifier] = task_index  # Book-keeping for dependencies.
         # Generate the line in the submission script.
-        line = 't' + str(task_index) + '=$(sbatch '
+        line = 't' + str(task_index) + '=$(qsub '
         if len(task.dependencies) > 0:
-            flag = '--dependency=afterok'
+            flag = '-hold_jid'
             for dependency in task.dependencies:
                 identifier = tasks[dependency.identifier]
-                flag += ':$t' + str(identifier)
-            line += flag + ' '
+                flag += ' ' + str(identifier) + ' ,'
+            line = line[:-1]
         line += dir + '/' + node_task_filename(task) + ')'
         lines.append(line)
         # Add the generated job identifier.
