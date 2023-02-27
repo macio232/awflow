@@ -1,1 +1,1 @@
-__backend__ = 'slurm'
+__backend__ = 'sge'
