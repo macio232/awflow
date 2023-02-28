@@ -15,7 +15,6 @@ from typing import Callable
 from typing import Union
 
 
-
 def disable(f: Callable) -> Callable:
     node = add_and_get_node(f)
     node.prunable = True
@@ -73,7 +72,7 @@ def cpus(f: Callable, n: int) -> Callable:
 def cpus_and_memory(f: Callable, n: int, memory: str) -> Callable:
     node = add_and_get_node(f)
     awflow.backend.cpus(node, n)
-    awflow.backend.memory(node, memory)
+    awflow.backend.memory(node, memory, n)
 
     return f
 
@@ -87,9 +86,9 @@ def gpus(f: Callable, n: int, memory: str=None) -> Callable:
 
 
 @parameterized
-def memory(f: Callable, memory: str) -> Callable:
+def memory(f: Callable, memory: str, n: int=1) -> Callable:
     node = add_and_get_node(f)
-    awflow.backend.memory(node, memory)
+    awflow.backend.memory(node, memory, n)
 
     return f
 
