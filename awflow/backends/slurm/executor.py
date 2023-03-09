@@ -32,6 +32,7 @@ def execute(workflow: DAWG, dir: str = '.workflows', **kwargs) -> None:
         generate_metadata(workflow=workflow, dir=directory)
         # Prepare the Slurm submission.
         prepare_submission(workflow=workflow, dir=directory)
+        raise NotImplementedError("Pipeline built, exit before execution")
         try:
             submit(dir=directory)  # Submit to Slurm
         except Exception as e:
@@ -84,7 +85,19 @@ def generate_task_files(workflow: DAWG, dir: str) -> None:
         commands = []
         commands.extend(plugins.generate_before(node=node))
         absolute_path = os.path.abspath(dir + '/' + executable_name(node))
-        commands.append('python -u -m awflow.bin.processor ' + absolute_path + command_suffix)
+        if 'SINGULARITY_DEFAULT_ENV' in os.environ:
+            if 'chdir' in node.attributes.keys():
+                _exec = absolute_path.lstrip(node['chdir']) + command_suffix
+            else:
+                _exec = absolute_path.lstrip(os.getcwd()) + command_suffix
+            commands.append(
+                f'singularity exec '
+                f'--nv --bind "${{PWD}}:/${{PWD##*/}}" --pwd "/${{PWD##*/}}" '
+                f'{os.environ["SINGULARITY_DEFAULT_ENV"]}'
+                f' bash -c "python -u -m awflow.bin.processor {_exec}"'
+            )
+        else:
+            commands.append('python -u -m awflow.bin.processor ' + absolute_path + command_suffix)
         commands.extend(plugins.generate_after(node=node))
         lines.extend(commands)
         # Write the task file.
