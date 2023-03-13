@@ -10,6 +10,8 @@ from . import standalone
 
 
 def autodetect():
+    # TODO: remove after debugging
+    return sge
     if slurm_detected():
         return slurm
     elif sge_detected():
