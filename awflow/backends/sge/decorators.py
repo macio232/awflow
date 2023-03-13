@@ -23,8 +23,7 @@ def memory(node: Node, memory: str, n: int = 1) -> None:
 def gpus(node: Node, n: int, memory: str=None) -> None:
     if n != 0:
         node['-jc'] = os.environ.get('SGE_JOB_CLASS', 'gpu-container_g1.24h')
-        # TODO: Add default base container name
-        node['-ac'] = f"d={os.environ.get('SGE_BASE_CONTAINER', None)}"
+        node['-ac'] = f"d={os.environ.get('SGE_BASE_CONTAINER', 'nvcr-cuda-11.7.0-ubuntu20.04')}"
     else:
         node['-jc'] = "pcc-normal"
 
