@@ -20,9 +20,9 @@ def memory(node: Node, memory: str, n: int = 1) -> None:
     node['-l h_vmem='] = f'{mem:.2f}G'
 
 
-def gpus(job_class: str, node: Node, n: int, memory: str=None) -> None:
+def gpus(node: Node, n: int, memory: str=None) -> None:
     if n != 0:
-        node['-jc'] = job_class
+        node['-jc'] = os.environ.get('SGE_JOB_CLASS', 'gpu-container_g1.24h')
         # TODO: Add default base container name
         node['-ac'] = f"d={os.environ.get('SGE_BASE_CONTAINER', None)}"
     else:

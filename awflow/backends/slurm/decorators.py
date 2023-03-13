@@ -18,7 +18,7 @@ def memory(node: Node, memory: str, n=None) -> None:
     node['--mem='] = memory.upper()
 
 
-def gpus(node: Node, n: int, memory: str=None, job_class=None) -> None:
+def gpus(node: Node, n: int, memory: str=None) -> None:
     if memory is None:
         node['--gres=gpu:'] = str(n)
     else:
