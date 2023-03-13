@@ -32,6 +32,7 @@ def execute(workflow: DAWG, dir: str = '.workflows', **kwargs) -> None:
         generate_metadata(workflow=workflow, dir=directory)
         # Prepare the Slurm submission.
         prepare_submission(workflow=workflow, dir=directory)
+        raise NotImplementedError
         try:
             submit(dir=directory)  # Submit to SGE
         except Exception as e:
