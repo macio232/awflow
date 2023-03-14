@@ -73,7 +73,7 @@ def generate_task_files(workflow: DAWG, dir: str) -> None:
             if key[:1] != '-':  # Skip non-sbatch arguments
                 continue
             value = node[key]
-            line = '#$ ' + key + " " + value
+            line = '#$ ' + key + (" " if key.endswith('=') else "") + value
             lines.append(line)
         # Check if the task is an array task.
         if node.tasks > 1:

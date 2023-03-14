@@ -30,8 +30,8 @@ def set_partitions_slurm(node: Node, partitions: List[str]) -> None:
 
 
 def set_partitions_sge(node: Node, partitions: List[str]) -> None:
-    if '-q ' not in node.attributes.keys():
-        node['-q '] = ','.join(partitions)
+    if '-q' not in node.attributes.keys():
+        node['-q'] = ','.join(partitions)
 
 
 def set_constraint(node: Node, constraints: str) -> None:
