@@ -1,4 +1,5 @@
 import awflow
+import os
 
 from awflow.dawg import DirectedAcyclicWorkflowGraph as DAWG
 from awflow.node import Node
@@ -30,8 +31,8 @@ def set_partitions_slurm(node: Node, partitions: List[str]) -> None:
 
 
 def set_partitions_sge(node: Node, partitions: List[str]) -> None:
-    if '-q' not in node.attributes.keys():
-        node['-q'] = ','.join(partitions)
+    if '-jc' not in node.attributes.keys():
+        node['-jc'] = os.environ.get('SGE_CPU_JOB_CLASS', 'pcc-normal')
 
 
 def set_constraint(node: Node, constraints: str) -> None:
