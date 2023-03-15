@@ -79,7 +79,7 @@ def generate_task_files(workflow: DAWG, dir: str) -> None:
             lines.append(line)
         # Check if the task is an array task.
         if node.tasks > 1:
-            lines.append('#$ -t 0-' + str(node.tasks - 1))
+            lines.append('#$ -t 1-' + str(node.tasks))
             command_suffix = ' $SGE_TASK_ID'
         else:
             command_suffix = ''
