@@ -14,6 +14,8 @@ from typing import Callable
 def cpus(node: Node, n: int) -> None:
     if 'gpu' not in node.get("-jc", ""):
         node['-pe'] = f"{os.environ.get('SGE_PARALLEL_ENVIRONMENT', 'OpenMP')} {str(n)}"
+    else:
+        node['-ac'] = f"d={os.environ.get('SGE_BASE_CONTAINER', 'nvcr-cuda-11.7.0-ubuntu20.04')}"
 
 
 def memory(node: Node, memory: str) -> None:
