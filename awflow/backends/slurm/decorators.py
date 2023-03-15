@@ -14,7 +14,7 @@ def cpus(node: Node, n: int) -> None:
     node['--cpus-per-task='] = str(n)
 
 
-def memory(node: Node, memory: str, n=None) -> None:
+def memory(node: Node, memory: str) -> None:
     node['--mem='] = memory.upper()
 
 
