@@ -69,6 +69,7 @@ def generate_task_files(workflow: DAWG, dir: str) -> None:
         lines = []
         lines.append('#!/usr/bin/env bash')
         lines.append('#$ -S /bin/bash')
+        lines.append('#$ -j y')
         lines.append(f'#$ -P {os.environ.get("SGE_GROUP_ID")}')
         # Set the task attributes
         for key in node.attributes:
@@ -116,7 +117,7 @@ def generate_submission_script(workflow: DAWG, dir: str) -> None:
                 identifier = tasks[dependency.identifier]
                 flag += '$t' + str(identifier)
             line += flag + ' '
-        line += dir + '/' + node_task_filename(task) + ')'
+        line += dir + '/' + node_task_filename(task) + ' | awk \'{split($0,a,"."); print a[1]}\')'
         lines.append(line)
         # Add the generated job identifier.
         job_identifiers += '$t' + str(task_index) + '\n'
