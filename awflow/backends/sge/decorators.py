@@ -16,7 +16,7 @@ def cpus(node: Node, n: int) -> None:
         node['-pe'] = f"{os.environ.get('SGE_PARALLEL_ENVIRONMENT', 'OpenMP')} {str(n)}"
 
 
-def memory(node: Node, memory: str, n: int = 1) -> None:
+def memory(node: Node, memory: str) -> None:
     pass
 
 
