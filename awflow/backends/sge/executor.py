@@ -80,7 +80,7 @@ def generate_task_files(workflow: DAWG, dir: str) -> None:
         # Check if the task is an array task.
         if node.tasks > 1:
             lines.append('#$ -t 1-' + str(node.tasks))
-            command_suffix = ' $SGE_TASK_ID'
+            command_suffix = ' $TASK_ID'
         else:
             command_suffix = ''
         # Generate the commands of the task
@@ -109,14 +109,14 @@ def generate_submission_script(workflow: DAWG, dir: str) -> None:
     for task_index, task in enumerate(workflow.program()):
         tasks[task.identifier] = task_index  # Book-keeping for dependencies.
         # Generate the line in the submission script.
-        line = 't' + str(task_index) + '=$(qsub '
+        line = 't' + str(task_index) + '=$(qsub -terse '
         if len(task.dependencies) > 0:
             flag = '-hold_jid '
             for dependency in task.dependencies:
                 identifier = tasks[dependency.identifier]
                 flag += '$t' + str(identifier)
             line += flag + ' '
-        line += dir + '/' + node_task_filename(task) + ' | awk "{print $3}")'
+        line += dir + '/' + node_task_filename(task) + ')'
         lines.append(line)
         # Add the generated job identifier.
         job_identifiers += '$t' + str(task_index) + '\n'
