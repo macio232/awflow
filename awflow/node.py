@@ -142,5 +142,8 @@ class Node:
     def __setitem__(self, key: Any, value: Any) -> None:
         self._attributes[key] = value
 
+    def __delitem__(self, key: Any) -> None:
+        del self._attributes[key]
+
     def __getitem__(self, key: Any) -> Any:
         return self._attributes[key]
