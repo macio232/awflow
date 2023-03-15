@@ -58,9 +58,9 @@ def add_default_attributes(workflow: DAWG, dir: str) -> None:
         # Set the location of the logfile.
         fmt = '"' + dir + '/logs/' + node.name
         if node.tasks > 1:
-            fmt += '-%A_%a.log'
+            fmt += '-$JOB_ID_$TASK_ID.log'
         else:
-            fmt += '-%j.log'
+            fmt += '-$JOB_ID.log'
         node['-o'] = fmt + '"'
 
 
