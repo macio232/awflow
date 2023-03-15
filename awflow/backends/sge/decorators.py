@@ -24,7 +24,8 @@ def gpus(node: Node, n: int, memory: str=None) -> None:
     if n != 0:
         node['-jc'] = os.environ.get('SGE_GPU_JOB_CLASS', 'gpu-container_g1.24h')
         node['-ac'] = f"d={os.environ.get('SGE_BASE_CONTAINER', 'nvcr-cuda-11.7.0-ubuntu20.04')}"
-        del node['-pe']
+        if node.get("-pe", None) is not None:
+            del node['-pe']
 
 
 def timelimit(node: Node, timelimit: str) -> None:

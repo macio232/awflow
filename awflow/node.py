@@ -147,3 +147,9 @@ class Node:
 
     def __getitem__(self, key: Any) -> Any:
         return self._attributes[key]
+
+    def get(self, item, default):
+        try:
+            return self._attributes[item]
+        except KeyError as err:
+            return default
