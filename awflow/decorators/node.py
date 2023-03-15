@@ -72,7 +72,7 @@ def cpus(f: Callable, n: int) -> Callable:
 def cpus_and_memory(f: Callable, n: int, memory: str) -> Callable:
     node = add_and_get_node(f)
     awflow.backend.cpus(node, n)
-    awflow.backend.memory(node, memory, n)
+    awflow.backend.memory(node, memory)
 
     return f
 
